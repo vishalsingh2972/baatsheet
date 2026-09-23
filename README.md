@@ -82,14 +82,15 @@ I originally built it for myself to stop suffering through form creation. It's n
 git clone https://github.com/vishalsingh2972/baatsheet.git
 cd baatsheet
 
-# 2. Install dependencies (backend + frontend)
-cd backend && npm install && cd ..
-cd frontend && npm install && cd ..
+# 2. Install everything (root tooling + backend + frontend)
+npm install         # root: installs `concurrently`
+npm run setup       # installs dependencies in backend/ and frontend/
 
-# 3. Configure environment (see below), then run both in separate terminals:
-cd backend && npm run dev     # API → http://localhost:5000
-cd frontend && npm run dev    # UI  → http://localhost:5173
+# 3. Configure environment (see below), then start BOTH apps with one command:
+npm run dev         # API → http://localhost:5000  ·  UI → http://localhost:5173
 ```
+
+> 💡 `backend/` and `frontend/` live side-by-side in this single repo — the root `package.json` drives both via `concurrently`. Prefer two terminals? Run `npm run dev:backend` and `npm run dev:frontend` separately.
 
 Open **http://localhost:5173**, click the ✨ AI prompt, and speak or type your first form.
 
@@ -148,14 +149,12 @@ cd frontend
 npm install
 ```
 
-Create `frontend/.env`:
+> ✅ **`frontend/.env` is optional for local dev** — the frontend already defaults to `http://localhost:5000/api/v1`, which matches the backend's default port, so clone → `npm run dev` just works with zero config. Create `frontend/.env` only to **override** the API URL (production):
 
 ```env
-# Backend API Endpoint — point this at your local backend
-VITE_API_URL=http://localhost:5000/api/v1
+# Backend API Endpoint (production example)
+VITE_API_URL=https://your-backend.onrender.com/api/v1
 ```
-
-> ⚠️ **Note:** the code's built-in default is `http://localhost:5050/api/v1`, while the backend defaults to port **5000**. Always set `VITE_API_URL` explicitly (as above) or run the backend with `PORT=5050`.
 
 Start the dev server:
 
@@ -169,6 +168,11 @@ Open **http://localhost:5173** 🎉
 
 | Where | Command | What it does |
 |---|---|---|
+| **root** | `npm install && npm run setup` | Install root tooling + both apps' dependencies |
+| **root** | `npm run dev` | Run API + UI together (via `concurrently`) |
+| **root** | `npm run dev:backend` / `npm run dev:frontend` | Run one app only |
+| **root** | `npm run build` | Build both apps |
+| **root** | `npm run lint` | Lint the frontend |
 | `backend/` | `npm run dev` | Run API with hot-reload (`ts-node-dev`) |
 | `backend/` | `npm run build` | Compile TypeScript → `dist/` |
 | `backend/` | `npm start` | Run compiled production build |
